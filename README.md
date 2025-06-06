@@ -164,3 +164,304 @@ function divideAndConquer(input): Result {
 * **Tiling Recursion**: Used in optimizing cache locality in matrix operations.
 
 
+### 🔍 Algorithm Explanation: 108. Convert Sorted Array to BST
+
+**Goal:** Convert a sorted array into a height-balanced Binary Search Tree (BST).
+
+---
+
+### 💡 **Divide & Conquer Strategy**
+
+1. **Base Case:**
+
+   * If array is empty → return `null`.
+
+2. **Divide:**
+
+   * Pick the **middle element** as root → ensures balance.
+
+3. **Conquer:**
+
+   * Recursively do the same for:
+
+     * **Left subarray** → left child
+     * **Right subarray** → right child
+
+4. **Combine:**
+
+   * Link left and right subtrees to the root node.
+
+---
+
+### 📈 Time & Space Complexity
+
+| Metric               | Value              |
+| -------------------- | ------------------ |
+| **Time Complexity**  | `O(n)`             |
+| **Space Complexity** | `O(log n)` (stack) |
+
+* **`O(n)`**: Each node is visited once.
+* **`O(log n)`**: Recursive call stack depth (balanced tree).
+
+---
+
+class TreeNode {
+  val: number;
+  left: TreeNode | null;
+  right: TreeNode | null;
+
+  constructor(val?: number, left?: TreeNode | null, right?: TreeNode | null) {
+    this.val = val ?? 0;
+    this.left = left ?? null;
+    this.right = right ?? null;
+  }
+}
+
+function sortedArrayToBST(nums: number[]): TreeNode | null {
+  if (!nums.length) return null;
+
+  const mid = Math.floor(nums.length / 2);
+  const root = new TreeNode(nums[mid]);
+
+  root.left = sortedArrayToBST(nums.slice(0, mid));
+  root.right = sortedArrayToBST(nums.slice(mid + 1));
+
+  return root;
+}
+
+Here's a line-by-line explanation of the code:
+
+---
+
+### 🌳 TreeNode Class
+
+```ts
+class TreeNode {
+  val: number;
+  left: TreeNode | null;
+  right: TreeNode | null;
+```
+
+* Defines a node of a binary tree with:
+
+  * `val`: current node value.
+  * `left` and `right`: children nodes (or null).
+
+```ts
+  constructor(val?: number, left?: TreeNode | null, right?: TreeNode | null) {
+    this.val = val ?? 0;
+    this.left = left ?? null;
+    this.right = right ?? null;
+  }
+}
+```
+
+* Constructor allows optional inputs.
+* Uses `??` to provide defaults if undefined.
+
+---
+
+### 🔁 Main Function
+
+```ts
+function sortedArrayToBST(nums: number[]): TreeNode | null {
+  if (!nums.length) return null;
+```
+
+* Base case: if array is empty → no node to create.
+
+```ts
+  const mid = Math.floor(nums.length / 2);
+  const root = new TreeNode(nums[mid]);
+```
+
+* Middle element becomes the **root** to ensure balance.
+
+```ts
+  root.left = sortedArrayToBST(nums.slice(0, mid));
+  root.right = sortedArrayToBST(nums.slice(mid + 1));
+```
+
+* **Left half** of array builds left subtree.
+* **Right half** builds right subtree.
+* Recursive calls do the same at each level.
+
+```ts
+  return root;
+}
+```
+
+Here’s the solution for **LeetCode 148. Sort List** using the **Divide and Conquer (Merge Sort)** approach.
+
+---
+
+### ✅ Problem:
+
+Sort a singly linked list in **O(n log n)** time using constant space complexity.
+
+---
+
+### 💡 Algorithm: Merge Sort (Divide & Conquer)
+
+1. **Divide** the list into two halves using slow & fast pointers.
+2. **Recursively sort** both halves.
+3. **Merge** the sorted halves.
+
+---
+
+### ✅ Code (TypeScript/JavaScript)
+
+```ts
+class ListNode {
+  val: number;
+  next: ListNode | null;
+
+  constructor(val?: number, next?: ListNode | null) {
+    this.val = val ?? 0;
+    this.next = next ?? null;
+  }
+}
+
+function sortList(head: ListNode | null): ListNode | null {
+  if (!head || !head.next) return head;
+
+  // 1. Split list into two halves
+  let slow = head, fast = head, prev = null;
+  while (fast && fast.next) {
+    prev = slow;
+    slow = slow.next!;
+    fast = fast.next.next;
+  }
+  prev!.next = null; // cut the list
+
+  // 2. Sort each half
+  const left = sortList(head);
+  const right = sortList(slow);
+
+  // 3. Merge sorted halves
+  return merge(left, right);
+}
+
+function merge(l1: ListNode | null, l2: ListNode | null): ListNode | null {
+  const dummy = new ListNode();
+  let curr = dummy;
+
+  while (l1 && l2) {
+    if (l1.val < l2.val) {
+      curr.next = l1;
+      l1 = l1.next;
+    } else {
+      curr.next = l2;
+      l2 = l2.next;
+    }
+    curr = curr.next;
+  }
+
+  curr.next = l1 || l2;
+  return dummy.next;
+}
+```
+
+---
+
+### 🧪 Test Case
+
+```ts
+// Input: [4,2,1,3]
+// Output: [1,2,3,4]
+```
+
+---
+
+### 📈 Time and Space Complexity
+
+* **Time:** O(n log n) — from divide + merge steps
+* **Space:** O(log n) — recursion stack (not extra memory)
+
+### 🔍 Explanation of 148. Sort List using **Divide and Conquer (Merge Sort)**
+
+---
+
+### 🧠 Idea:
+
+We apply **merge sort** to a linked list:
+
+* **Divide:** Use slow & fast pointers to find the middle.
+* **Conquer:** Recursively sort left and right halves.
+* **Combine:** Merge the two sorted lists.
+
+---
+
+### 🔁 Step-by-step:
+
+1. **Base case:**
+
+```ts
+if (!head || !head.next) return head;
+```
+
+* If the list is empty or has only one node, it’s already sorted.
+
+2. **Find Middle (Divide Step):**
+
+```ts
+let slow = head, fast = head, prev = null;
+while (fast && fast.next) {
+  prev = slow;
+  slow = slow.next!;
+  fast = fast.next.next;
+}
+prev!.next = null;
+```
+
+* `slow` reaches mid, `fast` reaches end.
+* `prev.next = null` splits the list into 2 halves.
+
+3. **Recursive Sort (Conquer Step):**
+
+```ts
+const left = sortList(head);
+const right = sortList(slow);
+```
+
+* Recursively sort both halves.
+
+4. **Merge Sorted Halves (Combine Step):**
+
+```ts
+return merge(left, right);
+```
+
+* Merge the two sorted halves using helper `merge()`.
+
+---
+
+### 🧩 `merge()` Function:
+
+```ts
+while (l1 && l2) {
+  if (l1.val < l2.val) {
+    curr.next = l1;
+    l1 = l1.next;
+  } else {
+    curr.next = l2;
+    l2 = l2.next;
+  }
+  curr = curr.next;
+}
+curr.next = l1 || l2;
+```
+
+* Compare nodes and link the smaller one.
+* Add remaining nodes if any.
+
+---
+
+### 📊 Complexity
+
+* **Time:** `O(n log n)` – from log(n) splits and O(n) merges
+* **Space:** `O(log n)` – recursion stack only (no extra memory for arrays)
+
+
+
+
